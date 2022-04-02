@@ -8,15 +8,19 @@ import time
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from termcolor import *
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import threading
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 proxies = Data().loadProxies('proxies.txt')
 
 headers = {
-    'cache-control':'DYNAMIC'
+    'cache-control':'max-age=0'
 }
 colorama.init()
+
+
+screen_lock = threading.Semaphore(value=1)
 
 
 class Task:
@@ -29,7 +33,13 @@ class Task:
 
 
     def LOG(self,text,color='white'):
-        print(colored(f"[{datetime.now()}][{self.keyword}] {text}",color))
+        try:
+            screen_lock.acquire()
+            print(colored(f"[{datetime.now()}][{self.keyword}] {text}",color))
+            screen_lock.release()
+        except:
+            print(colored(f"[{datetime.now()}][{self.keyword}] {text}",color))
+
 
 
     def sendWebhook(self,name,price,image,link):
@@ -72,6 +82,9 @@ class Task:
                 time.sleep(1)
                 continue
             
+
+            print(r.headers['Server-Timing'])
+            print(r.url)
             #Create JSON
             if r.status_code == 200:
                 try:
@@ -105,4 +118,9 @@ class Task:
             time.sleep(1)
     
 
-Task('dunk')
+
+keywords = ['dunk','jordan']
+
+
+for i in keywords:
+    threading.Thread(target=Task,args=(i,)).start()
