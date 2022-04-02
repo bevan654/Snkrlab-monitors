@@ -1,0 +1,10 @@
+
+
+endpoint = https://eve.theiconic.com.au/v2/catalog/products?q=550&sort=new
+
+
+endpoint doesnt get 403'd or cached. - u dont need proxies
+run like 1 second delay
+
+
+dm me for webhook
