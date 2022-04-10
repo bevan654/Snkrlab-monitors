@@ -24,6 +24,7 @@ colorama.init()
 screen_lock = threading.Semaphore(value=1)
 
 
+print(proxies)
 class Task:
     def __init__(self,keyword):
         self.keyword = keyword
@@ -112,7 +113,7 @@ class Task:
                 continue
 
             self.first_run = False
-            time.sleep(10)
+            time.sleep(2)
     
 
 
