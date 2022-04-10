@@ -15,6 +15,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 proxies = Data().loadProxies('proxies.txt')
 
 headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36',
     'cache-control':'max-age=0'
 }
 colorama.init()
@@ -30,7 +31,6 @@ class Task:
         self.first_run = True
 
         self.start_monitor()
-
 
     def LOG(self,text,color='white'):
         try:
@@ -76,22 +76,19 @@ class Task:
             
             #Create Request
             try:
-                r = requests.get('https://www.asos.com/api/product/search/v2/',params=params, headers=headers, verify=False, timeout=5)
+                r = requests.get('https://www.asos.com/api/product/search/v2/',params=params, proxies=random.choice(proxies), headers=headers)
             except Exception as e:
+                print(e)
                 self.LOG("Bad Response Status",'red')
-                time.sleep(1)
+                time.sleep(10)
                 continue
-            
-
-            print(r.headers['Server-Timing'])
-            print(r.url)
             #Create JSON
             if r.status_code == 200:
                 try:
                     json_data = json.loads(r.text)
                 except:
                     self.LOG("Failed to Create JSON", "red")
-                    time.sleep(1)
+                    time.sleep(10)
                     continue
 
                 #Check Items
@@ -111,11 +108,11 @@ class Task:
 
             else:
                 self.LOG("Bad Response Status: "+str(r.status_code),'red')
-                time.sleep(1)
+                time.sleep(10)
                 continue
 
             self.first_run = False
-            time.sleep(1)
+            time.sleep(10)
     
 
 

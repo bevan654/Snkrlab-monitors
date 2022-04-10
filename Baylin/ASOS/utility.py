@@ -35,8 +35,8 @@ class Data:
             for i in e:
                 i = i.strip().split(':')
                 proxies.append({
-                    'http':'http://{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1]),
-                    'https':'https://{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1])
+                    'http':'{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1]),
+                    'https':'{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1])
                 })
 
         if proxies == []:
