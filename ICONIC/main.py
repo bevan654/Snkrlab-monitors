@@ -74,7 +74,8 @@ class Monitor:
 
             try:
                 response = requests.get(f'https://eve.theiconic.com.au/v2/catalog/products?q={self.keyword}&sort=new',headers=headers,proxies=random.choice(proxies))
-            except:
+            except Exception as e:
+                print(e)
                 self.LOG("[MONITOR] Request Error",'red')
                 time.sleep(1)
                 continue

@@ -24,7 +24,6 @@ colorama.init()
 screen_lock = threading.Semaphore(value=1)
 
 
-print(proxies)
 class Task:
     def __init__(self,keyword):
         self.keyword = keyword
@@ -44,10 +43,10 @@ class Task:
 
 
     def sendWebhook(self,name,price,image,link):
-        webhook = DiscordWebhook(url='https://discord.com/api/webhooks/959694423799763005/Ir2hk2MNYbzRTPtfia4zCaaKi6uHydSjLR8Ss72Q-KRt4890eIY0q1Q_sug8z2FIA9Fz')
+        webhook = DiscordWebhook(url='https://discord.com/api/webhooks/959351397546094663/jJ2Uz3kEGQkFLXT250orWt_34VcFuQOYLn7lb9FFR2-gSWJheQvDJGRnOO-KQdW6mTQD')
         embed = DiscordEmbed(title=name, description='``New Product``', url=link,color=15158332)
-        embed.set_author(name='https://www.asos.com/au', icon_url='https://media.discordapp.net/attachments/904022469512396861/904022677109497907/Genesis_AIO_logo_black.png?width=1026&height=1026')
-        embed.set_footer(text='Powered By Genesis | Code by Toyu | ASOS V1.0.0',icon_url='https://media.discordapp.net/attachments/904022469512396861/904022677109497907/Genesis_AIO_logo_black.png?width=1026&height=1026')
+        embed.set_author(name='https://www.asos.com/au', icon_url='https://images.hotukdeals.com/merchants/raw/avatar/88_2/re/352x352/qt/60/88_2.jpg')
+        embed.set_footer(text='Toyu x Genesis | Version 1.0.0')
         embed.set_thumbnail(url='https://'+image)
         embed.set_timestamp()
         embed.add_embed_field(name='**Price**', value=price)
@@ -72,12 +71,18 @@ class Task:
         }
 
         while True:
+            try:
+                screen_lock.acquire()
+                print(self.keyword)
+                screen_lock.release()
+            except:
+                print(self.keyword)
             current_products = []
             self.LOG("Checking Stock...",'yellow')
-            
             #Create Request
+            chosen_proxy = random.choice(proxies)
             try:
-                r = requests.get('https://www.asos.com/api/product/search/v2/',params=params, proxies=random.choice(proxies), headers=headers)
+                r = requests.get('https://www.asos.com/api/product/search/v2/',params=params, proxies=chosen_proxy, headers=headers)
             except Exception as e:
                 print(e)
                 self.LOG("Bad Response Status",'red')
@@ -98,14 +103,14 @@ class Task:
                     if i['id'] not in self.products:
                         self.products.append(i['id'])
                         if self.first_run == False:
-                            self.LOG("New Product! "+i['name'])
-                            self.sendWebhook(i['name'],i['price']['current']['text'],i['imageUrl'],'https://www.asos.com/au/'+i['url'])
-
-                #Check for OOS Items then Remove
-                for k in self.products:
-                    if k not in current_products:
-                        self.LOG('Removed product '+k,'red')
-                        self.products.remove(k)
+                            if "dunk" in i["name"].lower():
+                                self.LOG("New Product! "+i['name'])
+                                self.sendWebhook(i['name'],i['price']['current']['text'],i['imageUrl'],'https://www.asos.com/au/'+i['url'])
+                            elif "jordan" in i["name"].lower():
+                                self.LOG("New Product! "+i['name'])
+                                self.sendWebhook(i['name'],i['price']['current']['text'],i['imageUrl'],'https://www.asos.com/au/'+i['url'])
+                            else:
+                                return
 
             else:
                 self.LOG("Bad Response Status: "+str(r.status_code),'red')
@@ -113,7 +118,7 @@ class Task:
                 continue
 
             self.first_run = False
-            time.sleep(2)
+            time.sleep(10)
     
 
 

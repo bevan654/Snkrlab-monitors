@@ -36,7 +36,7 @@ class Data:
                 i = i.strip().split(':')
                 proxies.append({
                     'http':'http://{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1]),
-                    'https':'https://{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1])
+                    'https':'http://{}:{}@{}:{}'.format(i[2],i[3],i[0],i[1])
                 })
 
         if proxies == []:
